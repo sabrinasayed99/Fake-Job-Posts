@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#40E0D0"      # Bright turquoise color for interactive elements
+backgroundColor = "#0A192F"    # Dark navy/black background
+secondaryBackgroundColor = "#172A45"  # Slightly lighter navy for secondary elements
+textColor = "#FFFFFF"         # White text
+font = "sans serif"
