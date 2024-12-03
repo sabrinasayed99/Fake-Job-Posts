@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from joblib import load
 import plotly.express as px
+import numpy as np
 
 # Set page configuration
 st.set_page_config(layout="wide",
@@ -65,8 +66,19 @@ def get_feature_importances(text_input):
 
 # Function to make predictions
 def make_prediction(description):
-    prediction = pipeline.predict([description])
-    probability = pipeline.predict_proba([description])[0]
+    # Input validation and preprocessing
+    if not isinstance(description, str):
+        description = str(description)
+    
+    # Remove extra whitespace and ensure non-empty
+    description = description.strip()
+    if not description:
+        raise ValueError("Description cannot be empty")
+    # Reshape the input into a 2D array
+    description_array = np.array([description]).reshape(1, -1)
+    
+    prediction = pipeline.predict(description_array)
+    probability = pipeline.predict_proba(description_array)[0]
     importances = get_feature_importances(description)
     return {"Prediction": "Real" if prediction[0] else "Fake", 
             "Probability": probability,
