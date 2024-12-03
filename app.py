@@ -66,17 +66,16 @@ def get_feature_importances(text_input):
 # Function to make predictions
 def make_prediction(description):
     prediction = pipeline.predict([description])
-    probability = pipeline.predict_proba([description])[0][1]
+    probability = pipeline.predict_proba([description])[0]
     importances = get_feature_importances(description)
     return {"Prediction": "Real" if prediction[0] else "Fake", 
-            "Probability": probability[0],
+            "Probability": probability,
             "Important Features": importances}
 
 
 # Streamlit app layout
 st.title(":rotating_light: Fake Job Post Detector :rotating_light:")
 st.markdown("**Real or Fake?** This tool helps you determine the authenticity of job postings.")
-st.write("Enter a job description to check if it's real or fake.")
 
 # Load model at startup
 pipeline, metadata, feature_importances = load_model_and_metadata()
@@ -84,9 +83,8 @@ pipeline, metadata, feature_importances = load_model_and_metadata()
 if pipeline is not None:
     # Prediction Section
     st.header("Job Post Analysis")
-    st.write("Enter a job description to check if it's real or fake.")
 # Input field for job description
-user_input = st.text_area("Enter a job description", placeholder="Type or paste job details here...")
+user_input = st.text_area("Enter a job description to check if it's real or fake", placeholder="Type or paste job details here...")
 
 # Prediction button
 if st.button("Check Job Post"):
@@ -95,7 +93,7 @@ if st.button("Check Job Post"):
             result = make_prediction(user_input)
         st.success("Prediction Complete!")
         st.write(f"Prediction: {result['Prediction']}")
-        st.write(f"Probability: {result['Probability']:.2f}")
+        st.write(f"Probability: {result['Probability'][1]:.2f}")
         # Model Insights Section (moved inside the button click)
         st.header("Model Insights")
             
