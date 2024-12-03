@@ -72,8 +72,14 @@ def make_prediction(description):
             "Probability": probability[0],
             "Important Features": importances}
 
+import os
+
+# Get the directory where app.py is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
+logo_path = os.path.join(current_dir, "logo.png")
+
 # Streamlit app layout
-st.image("logo.png", width=200)
+st.image(logo_path, width=200)
 st.title(":rotating_light: Fake Job Post Detector :rotating_light:")
 st.markdown("**Real or Fake?** This tool helps you determine the authenticity of job postings.")
 st.write("Enter a job description to check if it's real or fake.")
