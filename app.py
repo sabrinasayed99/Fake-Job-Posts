@@ -30,9 +30,9 @@ def load_processor():
 def load_model_and_metadata():
     try:
         # Load the model that uses Cleaned_Processed_Data_2
-        model_path = '/Users/sabrinasayed/Documents/GitHub/Fake-Job-Posts/Models/best_model_pipeline.joblib'
-        metadata_path = '/Users/sabrinasayed/Documents/GitHub/Fake-Job-Posts/Models/best_model_metadata.joblib'
-        feature_importances_path = '/Users/sabrinasayed/Documents/GitHub/Fake-Job-Posts/Models/feature_importances.csv'
+        model_path = 'Models/best_model_pipeline.joblib'
+        metadata_path = 'Models/best_model_metadata.joblib'
+        feature_importances_path = 'Models/feature_importances.csv'
         
         pipeline = load(model_path)
         metadata = load(metadata_path)
@@ -51,25 +51,24 @@ def load_model_and_metadata():
 def get_feature_importances(processed_features):
     """Get feature importances for the processed input"""
     try:
-        vectorizer = pipeline.named_steps['tfidfvectorizer']
-        classifier = pipeline.named_steps['logisticregression']
+        # Get the classifier from the pipeline
+        classifier = pipeline.named_steps['classifier']  # XGBClassifier
         
-        # Get feature names and their coefficients
-        feature_names = vectorizer.get_feature_names_out()
-        coefficients = classifier.coef_[0]
+        # Get feature names from the preprocessor
+        feature_names = pipeline.named_steps['preprocessor'].get_feature_names_out()
         
-        # Get non-zero features
-        non_zero_features = processed_features.nonzero()[1]
+        # Get feature importances
+        importances = classifier.feature_importances_
         
         # Create importance dictionary
-        importances = [{
+        importances_dict = [{
             'feature': feature_names[idx],
-            'importance': abs(coefficients[idx]),
-            'coefficient': coefficients[idx]
-        } for idx in non_zero_features]
-        
+            'importance': abs(importances[idx]),
+            'coefficient': importances[idx]
+        } for idx in range(len(feature_names))]
+
         # Sort by absolute importance
-        return sorted(importances, key=lambda x: abs(x['importance']), reverse=True)[:10]
+        return sorted(importances_dict, key=lambda x: abs(x['importance']), reverse=True)[:10]
     except Exception as e:
         st.error(f"Error calculating feature importances: {str(e)}")
         return []
@@ -78,9 +77,11 @@ def get_feature_importances(processed_features):
 def make_prediction(input_data):
     """Make predictions using the loaded model"""
     try:
-        # Input validation
-        if not input_data.get('title', '').strip() or not input_data.get('description', '').strip():
-            raise ValueError("Job title and description are required")
+          # More comprehensive input validation
+        required_fields = ['title', 'description']
+        missing_fields = [field for field in required_fields if not input_data.get(field, '').strip()]
+        if missing_fields:
+            raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
     
      # Process the input using the text processor
         processed_features = processor.process_job_posting(input_data)
@@ -108,9 +109,6 @@ pipeline, metadata, feature_importances = load_model_and_metadata()
 # Streamlit app layout
 st.title(":rotating_light: Fake Job Post Detector :rotating_light:")
 st.markdown("**Real or Fake?** This tool helps you determine the authenticity of job postings.")
-
-# Load model at startup
-pipeline, metadata, feature_importances = load_model_and_metadata()
 
 if processor is not None and pipeline is not None:
     with st.form("job_post_form"):
@@ -193,9 +191,10 @@ if processor is not None and pipeline is not None:
                         help="Model's prediction (Real/Fake)"
                     )
                 with col2:
+                    confidence = result['Probability'][1] if result['Prediction'] == "Fake" else result['Probability'][0]
                     st.metric(
                         "Confidence", 
-                        f"{result['Probability'][1]:.1%}",
+                        f"{confidence:.1%}",
                         help="Model's confidence level"
                     )
                 
@@ -235,6 +234,6 @@ if processor is not None and pipeline is not None:
                         )
 
 else:
-    st.warning("Please enter a job description.")
+     st.error("Error: Model or text processor failed to load. Please check the logs.")
 
 
