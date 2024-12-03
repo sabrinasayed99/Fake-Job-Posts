@@ -73,7 +73,7 @@ def make_prediction(description):
             "Important Features": importances}
 
 # Streamlit app layout
-st.image("logo.jpg", width=200)
+st.image("logo.png", width=200)
 st.title(":rotating_light: Fake Job Post Detector :rotating_light:")
 st.markdown("**Real or Fake?** This tool helps you determine the authenticity of job postings.")
 st.write("Enter a job description to check if it's real or fake.")
