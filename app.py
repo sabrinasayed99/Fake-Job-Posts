@@ -1,6 +1,14 @@
 import streamlit as st
 import pandas as pd
 from joblib import load
+import plotly.express as px
+
+# Set page configuration
+st.set_page_config(layout="wide",
+                   page_title="Fake Job Post Detector",
+                   page_icon=":rotating_light:",
+                   )
+
 
 @st.cache_resource
 def load_model_and_metadata():
@@ -65,49 +73,50 @@ def make_prediction(description):
             "Important Features": importances}
 
 # Streamlit app layout
-st.title("Fake Job Post Detector")
+st.image("logo.jpg", width=200)
+st.title(":rotating_light: Fake Job Post Detector :rotating_light:")
+st.markdown("**Real or Fake?** This tool helps you determine the authenticity of job postings.")
 st.write("Enter a job description to check if it's real or fake.")
 
 # Load model at startup
 pipeline, metadata, feature_importances = load_model_and_metadata()
 
 if pipeline is not None:
-    st.write(f"Model loaded successfully! Using data source: {metadata['data_source']}")
-    
-    # Model Insights Section
-    st.header("Model Insights")
-    
-    # Display Important features
-    st.subheader("Important Features")
-    st.bar_chart(feature_importances.set_index('feature')['importance'].head(20))
-    
-    # Display performance metrics
-    st.subheader("Model Performance")
-    metrics = metadata['performance_metrics']
-    st.write(f"Accuracy: {metrics['accuracy']:.2f}")
-    st.write(f"F1 Score: {metrics['f1_score']:.2f}")
-    
     # Prediction Section
     st.header("Job Post Analysis")
     st.write("Enter a job description to check if it's real or fake.")
 # Input field for job description
-user_input = st.text_area("Job Description:", height=200)
+user_input = st.text_area("Enter a job description", placeholder="Type or paste job details here...")
 
 # Prediction button
 if st.button("Check Job Post"):
     if user_input.strip():
-        result = make_prediction(user_input)
+        with st.spinner("Processing..."):
+            result = make_prediction(user_input)
+        st.success("Prediction Complete!")
         st.write(f"Prediction: {result['Prediction']}")
         st.write(f"Probability: {result['Probability']:.2f}")
-
+        # Model Insights Section (moved inside the button click)
+        st.header("Model Insights")
+            
         # Display important features
-        st.write("Top Contributing Features:")
+        st.subheader("Top Contributing Features for This Post:")
         importance_df = pd.DataFrame(result['Important Features'])
         
-        # Create a bar chart
-        st.bar_chart(
-            importance_df.set_index('feature')['importance']
-        )
+        # Create a horizontal bar chart
+        fig2 = px.bar(
+                importance_df,
+                x='importance',
+                y='feature',
+                orientation='h',
+                title='Top Contributing Features for This Post'
+            )
+        fig2.update_layout(
+                yaxis={'categoryorder':'total ascending'},
+                height=400
+            )
+        st.plotly_chart(fig2, use_container_width=True)
+
         # Show detailed table
         st.write("\nDetailed Feature Importance:")
         st.dataframe(importance_df.style.format({
