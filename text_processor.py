@@ -6,10 +6,24 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from typing import List
+import logging
 
 
 class TextProcessor:
     def __init__(self):
+         # Define fields to process
+        self.text_fields = ['title',  'company_profile', 'description', 
+                           'requirements', 'benefits']
+        
+        # Define numerical features from CSV
+        self.numerical_features = ['telecommuting', 'has_company_logo', 'has_questions']
+        
+        # Define categorical features that need encoding
+        self.categorical_features = ['employment_type', 'department', 'required_experience', 
+                                   'required_education', 'industry', 'function']
+        # Add missing patterns
+        self.url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
         
     # Initialize NLTK components
         self.lemmatizer = WordNetLemmatizer()
@@ -24,20 +38,6 @@ class TextProcessor:
             except Exception as e:
                 print(f"Warning: Failed to download {resource}: {str(e)}")
 
-    # Update text fields list
-        self.text_fields=[
-            'title',
-            'department',
-            'company_profile',
-            'description',
-            'requirements',
-            'benefits',
-            'employment_type',
-            'required_experience',
-            'required_education',
-            'industry',
-            'function'
-        ]
     # Initialize fraud detection word lists
         self.urgency_words = ['urgent', 'immediate', 'limited time', 'act now']
         self.guarantee_words = ['guarantee', 'guaranteed', 'promise', 'risk-free']
@@ -53,12 +53,14 @@ class TextProcessor:
             'fraud': ['urgency_score', 'guarantee_score', 'pressure_score', 'excessive_punctuation', 'all_caps_words']
         }
         
-    # Add numerical feature names
-        self.numerical_features = [
-            'telecommuting',
-            'has_company_logo', 
-            'has_questions'
-        ]
+        self.logger = logging.getLogger(__name__)
+        if not self.logger.handlers:
+            handler = logging.StreamHandler()
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
+
 
     def preprocess_text(self, text):
         """
@@ -78,34 +80,27 @@ class TextProcessor:
         
         # Convert to lowercase
         text = text.lower()
-        
         # Normalize unicode characters
         text = unicodedata.normalize('NFKD', text)
-        
         # Remove non-ASCII characters
         text = text.encode('ascii', 'ignore').decode('ascii')
         
-        # Remove HTML tags
-        text = re.sub(r'<.*?>', '', text)
-        
-        # Remove special characters and digits
-        text = re.sub(r'[^\w\s]', ' ', text)
-        text = re.sub(r'\d+', '', text)
-        
+        # Combine regex operations for better efficiency
+        text = re.sub(r'<.*?>|[^\w\s]|\d+', ' ', text)
+    
         # Remove extra whitespace
         text = ' '.join(text.split())
-        
-        # Tokenization
-        tokens = word_tokenize(text)
-        
-        # Remove stopwords
-        tokens = [token for token in tokens if token not in self.stop_words]
-        
-        # Lemmatization
-        tokens = [self.lemmatizer.lemmatize(token) for token in tokens]
-        
-        # Join tokens back into text
-        return ' '.join(tokens)
+    
+        # NLP processing with error handling
+        try:
+            tokens = word_tokenize(text)
+            tokens = [token for token in tokens if token not in self.stop_words]
+            tokens = [self.lemmatizer.lemmatize(token) for token in tokens]
+            return ' '.join(tokens)
+    
+        except Exception as e:
+            print(f"Warning: NLP processing failed: {str(e)}")
+            return text  # Return cleaned text even if NLP processing fails
     
     
     def combine_text_fields(self, text_dict):
@@ -130,56 +125,35 @@ class TextProcessor:
         return combined.strip()
       
     
-    def extract_text_patterns(self, input_dict):
+    def extract_text_patterns(self, text):
         """
-        Extracts all features from the input fields
+        Extracts basic text patterns
         """
         # Validate input
-        if not isinstance(input_dict, dict):
-            raise ValueError("Input must be a dictionary")
-        # Update required fields
-        required_fields = ['title', 'description']  # minimum required fields
-        missing_fields = [field for field in required_fields if not input_dict.get(field)]
-        if missing_fields:
-            raise ValueError(f"Missing required fields: {missing_fields}")
+        if not isinstance(text, str):
+            return {
+                'avg_word_length': 0,
+                'caps_ratio': 0,
+                'url_count': 0,
+                'email_pattern': 0,
+                'money_pattern': 0
+            }
+        # Calculate features 
+        words = text.split()
+        avg_word_length = np.mean([len(word) for word in words]) if words else 0
         
-        # First get text features
-        combined_text = self.combine_text_fields(input_dict)
+        text_length = len(text)
+        caps_ratio = sum(1 for c in text if c.isupper()) / text_length if text_length > 0 else 0
         
-        # Ensure vectorizer is fitted before transform
-        if not self.is_fitted:
-            raise ValueError("TextProcessor must be fitted before extracting features")
-            
-        tfidf_features = self.transform([combined_text])
-        
-        features = {}
-        
-        # Process all text fields
-        for field in self.text_fields:
-            text = input_dict.get(field, '')
-            preprocessed_text = self.preprocess_text(text)
-            
-            # Add text patterns
-            patterns = self.extract_text_patterns(text)
-            for key, value in patterns.items():
-                features[f'{field}_{key}'] = value
-            
-            # Add fraud indicators
-            indicators = self.extract_fraud_indicators(text)
-            for key, value in indicators.items():
-                features[f'{field}_{key}'] = value
-            
-            # Add length features
-            features[f'{field}_length'] = len(preprocessed_text.split())
-        
-        # Add numerical features
-        for feature in self.numerical_features:
-            features[feature] = input_dict.get(feature, 0)
-        
-        # Combine all features into a single DataFrame
-        features_df = pd.DataFrame([features])
-        return pd.concat([features_df, tfidf_features], axis=1)
-    
+        # Return features as a dictionary
+        return {
+            'avg_word_length': avg_word_length,
+            'caps_ratio': caps_ratio,
+            'url_count': text.count('http'),
+            'email_pattern':  len(re.findall(r'[\w\.-]+@[\w\.-]+', text)),
+            'money_pattern': len(re.findall(r'[\$£€]\d+', text))
+        }
+
 
     def extract_fraud_indicators(self, text):
         """
@@ -208,152 +182,149 @@ class TextProcessor:
             'excessive_punctuation': len(re.findall(r'[!?]{2,}', text)),
             'all_caps_words': len(re.findall(r'\b[A-Z]{2,}\b', text))
         }
-
-    def extract_all_features(self, input_dict):
+    def process_dataframe(self, df: pd.DataFrame, text_columns: List[str]) -> pd.DataFrame:
         """
-        Extracts all features from the input fields, including both text and numerical.
+        Process a dataframe by adding text features for specified columns.
         
         Args:
-            input_dict (dict): Dictionary containing:
-                Text fields:
-                    - title
-                    - company_profile
-                    - description
-                    - requirements
-                    - benefits
-                Numerical fields:
-                    - telecommuting (0/1)
-                    - has_company_logo (0/1)
-                    - has_questions (0/1)
+            df (pd.DataFrame): Input dataframe
+            text_columns (list): List of column names to process
             
         Returns:
-            pandas.DataFrame: DataFrame containing all extracted features
+            pd.DataFrame: DataFrame with added feature columns
         """
-        # Validate input
-        if not isinstance(input_dict, dict):
-            raise ValueError("Input must be a dictionary")
-        # Add validation for required fields
-        required_fields = ['title', 'description']  # minimum required fields
-        missing_fields = [field for field in required_fields if not input_dict.get(field)]
-        if missing_fields:
-            raise ValueError(f"Missing required fields: {missing_fields}")
+        df = df.copy()
         
-        # First get text features
-        combined_text = self.combine_text_fields(input_dict)
-        
-        # Ensure vectorizer is fitted before transform
-        if not self.is_fitted:
-            raise ValueError("TextProcessor must be fitted before extracting features")
+        for column in text_columns:
+            # Extract and add fraud indicators
+            fraud_features = df[column].apply(self.extract_fraud_indicators)
+            fraud_df = pd.DataFrame(fraud_features.tolist())
+            fraud_df.columns = [f'{column}_{col}' for col in fraud_df.columns]
             
-        tfidf_features = self.transform([combined_text])
-        
-        features = {}
-        
-        # Process text fields
-        text_fields = ['title', 'company_profile', 'description', 'requirements', 'benefits']
-        for field in text_fields:
-            text = input_dict.get(field, '')
-            preprocessed_text = self.preprocess_text(text)
+            # Extract and add text patterns
+            pattern_features = df[column].apply(self.extract_text_patterns)
+            pattern_df = pd.DataFrame(pattern_features.tolist())
+            pattern_df.columns = [f'{column}_{col}' for col in pattern_df.columns]
             
-            # Add text patterns
-            patterns = self.extract_text_patterns(text)
-            for key, value in patterns.items():
-                features[f'{field}_{key}'] = value
+            # Combine with main dataframe
+            df = pd.concat([df, fraud_df, pattern_df], axis=1)
             
-            # Add fraud indicators
-            indicators = self.extract_fraud_indicators(text)
-            for key, value in indicators.items():
-                features[f'{field}_{key}'] = value
-            
-            # Add length features
-            features[f'{field}_length'] = len(preprocessed_text.split())
-        
-        # Add numerical features
-        for feature in self.numerical_features:
-            features[feature] = input_dict.get(feature, 0)
-        
-        # Combine all features into a single DataFrame
-        features_df = pd.DataFrame([features])
-        return pd.concat([features_df, tfidf_features], axis=1)
+        return df
 
     def process_job_posting(self, input_dict):
         """
-        Process a complete job posting and return all features.
+        Process a complete job posting and return a dataframe.
         
         Args:
-            input_dict (dict): Dictionary containing:
-                Text fields:
-                    - title
-                    - company_profile
-                    - description
-                    - requirements
-                    - benefits
-                Numerical fields:
-                    - telecommuting (0/1)
-                    - has_company_logo (0/1)
-                    - has_questions (0/1)
+            input_dict (dict): Dictionary containing all features matching Final_Cleaned_Data.csv columns
             
         Returns:
             pandas.DataFrame: DataFrame containing all extracted features
         """
-        if not self.is_fitted:
-            raise ValueError("TextProcessor must be fitted before processing job postings")
-            
-        return self.extract_all_features(input_dict)
+        
+        if not isinstance(input_dict, dict):
+            self.logger.error("Input must be a dictionary")
+            return pd.DataFrame()  # Return empty DataFrame if input is invalid
+        
+        # Process all features
+        features = {}
+
+        # Check for missing fields and log warnings
+        required_fields = self.text_fields + self.numerical_features + self.categorical_features
+        missing_fields = [field for field in required_fields if field not in input_dict]
+        if missing_fields:
+            self.logger.warning(f"Missing fields will be filled with default values: {missing_fields}")
     
-    def fit_transform(self, text_data):
+        # Calculate description length
+        features['description_length'] = len(input_dict.get('description', ''))
+
+        # Process text fields with default handling
+        for field in self.text_fields:
+            try:
+                self._process_text_field(input_dict, features, field)
+            except Exception as e:
+                self.logger.error(f"Error processing text field '{field}': {str(e)}")
+                self._set_default_text_features(features, field)
+        
+        # Add numerical and categorical features with type checking
+        self._add_numerical_categorical_features(input_dict, features)
+            
+        return pd.DataFrame([features])
+    
+    def _process_text_field(self, input_dict, features, field):
         """
-        Fits the vectorizer and transforms the input text data.
-        
-        Args:
-            text_data (list): List of text strings to process
-        
-        Returns:
-            pandas.DataFrame: TF-IDF features as a dataframe
+        Helper method to process a single text field with error handling.
         """
-        
-        # Convert input to list if it's a single string
-        if isinstance(text_data, str):
-            text_data = [text_data]
-        try:
-            tfidf_matrix = self.vectorizer.fit_transform(text_data)
-            self.is_fitted = True
+        text_content = input_dict.get(field, '')
+        if not text_content:
+            self.logger.info(f"Field '{field}' is empty or missing")
+
+        features[field] = input_dict.get(field, '')  # Add original text
+        features[f'{field}_processed'] = self.preprocess_text(input_dict.get(field, ''))  # Add processed text
+
+         # Extract patterns and indicators with error handling
+        try: 
+            patterns = self.extract_text_patterns(input_dict.get(field, ''))
+            for key, value in patterns.items():
+                features[f'{field}_{key}'] = value
         except Exception as e:
-            self.is_fitted = False
-            raise ValueError(f"Failed to fit vectorizer: {str(e)}")
-        
-        # Convert to dataframe with feature names
-        return pd.DataFrame(
-            tfidf_matrix.toarray(),
-            columns=self.vectorizer.get_feature_names_out()
-        )
-
-    def transform(self, text_data):
-        """
-        Transforms new text data using the fitted vectorizer.
-        
-        Args:
-            text_data (list): List of text strings to process
-        
-        Returns:
-            pandas.DataFrame: TF-IDF features as a dataframe
-        """
-        if not self.is_fitted:
-            raise ValueError("TextProcessor must be fitted before transform can be called")
+            self.logger.error(f"Error extracting patterns for '{field}': {str(e)}")
+            self._set_default_pattern_features(features, field)
             
-        # Convert input to list if it's a single string
-        if isinstance(text_data, str):
-            text_data = [text_data]
-            
-        # Transform the text data
-        tfidf_matrix = self.vectorizer.transform(text_data)
-        
-        # Convert to dataframe with feature names
-        return pd.DataFrame(
-            tfidf_matrix.toarray(),
-            columns=self.vectorizer.get_feature_names_out()
-        )
+        try:
+            indicators = self.extract_fraud_indicators(text_content)
+            for key, value in indicators.items():
+                features[f'{field}_{key}'] = value
+        except Exception as e:
+            self.logger.error(f"Error extracting fraud indicators for '{field}': {str(e)}")
+            self._set_default_fraud_features(features, field)
 
+    ## SET DEFAULT FEATURES WHEN VALUES ARE MISSING ##
+    def _set_default_text_features(self, features, field):
+        """
+        Set default values for all features related to a text field.
+        """
+        features[field] = ''
+        features[f'{field}_processed'] = ''
+        self._set_default_pattern_features(features, field)
+        self._set_default_fraud_features(features, field)
+
+    def _set_default_pattern_features(self, features, field):
+        """
+        Set default values for pattern-related features.
+        """
+        for prefix in self.feature_prefixes['pattern']:
+            features[f'{field}_{prefix}'] = 0
+
+    def _set_default_fraud_features(self, features, field):
+        """
+        Set default values for fraud-related features.
+        """
+        for prefix in self.feature_prefixes['fraud']:
+            features[f'{field}_{prefix}'] = 0
+
+    def _add_numerical_categorical_features(self, input_dict, features):
+        """
+        Add numerical and categorical features with type validation.
+        """
+        # Handle numerical features
+        for feature in self.numerical_features:
+            try:
+                value = input_dict.get(feature, 0)
+                features[feature] = float(value) if value is not None else 0
+            except (ValueError, TypeError) as e:
+                self.logger.warning(f"Invalid numerical value for '{feature}', using default 0: {str(e)}")
+                features[feature] = 0
+
+        # Handle categorical features
+        for feature in self.categorical_features:
+            try:
+                value = input_dict.get(feature, '')
+                features[feature] = str(value) if value is not None else ''
+            except Exception as e:
+                self.logger.warning(f"Invalid categorical value for '{feature}', using empty string: {str(e)}")
+                features[feature] = ''
+    
 # Save processor to joblib
 import joblib
 
