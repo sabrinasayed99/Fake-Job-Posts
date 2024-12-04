@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divX45HZPK9C17H2RS"></div>
+        <div class="lime top_div" id="top_div6LOGC11ZKB13NKO"></div>
         
         <script>
-        var top_div = d3.select('#top_divX45HZPK9C17H2RS').classed('lime top_div', true);
+        var top_div = d3.select('#top_div6LOGC11ZKB13NKO').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["Legitimate", "Fraudulent"], [0.998879611492157, 0.0011203843168914318]);
+            var pp = new lime.PredictProba(pp_svg, ["Legitimate", "Fraudulent"], [0.9987064599990845, 0.001293541630730033]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["Legitimate", "Fraudulent"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["offshore <= 0.00", -0.05286502079775444], ["keyboarding <= 0.00", -0.034833205239784906], ["gas <= 0.00", -0.02782310338953009], ["wage <= 0.00", -0.026223774201430485], ["builder <= 0.00", -0.0202313098960741], ["directory <= 0.00", -0.020036280587922853], ["optimized <= 0.00", -0.013403088576228041], ["press <= 0.00", -0.01113045935957378], ["aws <= 0.00", -0.010484227522949573], ["pushing <= 0.00", -0.006710199195773941]], 1, exp_div);
+                exp.show([["demonstrable <= 0.00", -0.04651026013762484], ["consider <= 0.00", -0.04178766029840883], ["conflict area world <= 0.00", -0.03826103290516228], ["estate <= 0.00", -0.025431478500249592], ["brand require new <= 0.00", 0.02207911445734873], ["ample <= 0.00", 0.005449856833191854], ["title_guarantee_score <= -0.01", -0.004168860792338826], ["level customer service <= 0.00", 0.002522633187909333], ["year professional <= 0.00", 0.0005171055696774459], ["mailing copy <= 0.00", -0.0003627565504975899]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["offshore", "0.00", -0.05286502079775444], ["keyboarding", "0.00", -0.034833205239784906], ["gas", "0.00", -0.02782310338953009], ["wage", "0.00", -0.026223774201430485], ["builder", "0.00", -0.0202313098960741], ["directory", "0.00", -0.020036280587922853], ["optimized", "0.00", -0.013403088576228041], ["press", "0.00", -0.01113045935957378], ["aws", "0.00", -0.010484227522949573], ["pushing", "0.00", -0.006710199195773941]], 1, raw_div);
+            exp.show_raw_tabular([["demonstrable", "0.00", -0.04651026013762484], ["consider", "0.00", -0.04178766029840883], ["conflict area world", "0.00", -0.03826103290516228], ["estate", "0.00", -0.025431478500249592], ["brand require new", "0.00", 0.02207911445734873], ["ample", "0.00", 0.005449856833191854], ["title_guarantee_score", "-0.01", -0.004168860792338826], ["level customer service", "0.00", 0.002522633187909333], ["year professional", "0.00", 0.0005171055696774459], ["mailing copy", "0.00", -0.0003627565504975899]], 1, raw_div);
         
         </script>
         </body></html>
