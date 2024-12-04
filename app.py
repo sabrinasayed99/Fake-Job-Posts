@@ -118,7 +118,7 @@ if processor is not None and pipeline is not None:
         with col1:
             title = st.text_input("Title",placeholder="e.g., Senior Software Engineer")
             department = st.text_input("Department",placeholder="e.g., Engineering")
-            employment_type= st.selectbox("Employment Type",
+            employment_type= st.text_input("Employment Type",
                                         options=["Full-Time","Part-Time","Contract","Temporary","Internship"])
             industry = st.text_input("Industry",placeholder="e.g., Technology")
             function = st.text_input("Job Function",placeholder="e.g., Software Development")

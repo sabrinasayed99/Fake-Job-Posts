@@ -1,4 +1,3 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import numpy as np
 import re
@@ -11,16 +10,6 @@ from nltk.stem import WordNetLemmatizer
 
 class TextProcessor:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer(
-            min_df=0.01,
-            max_df=0.95,
-            ngram_range=(1,3),
-            stop_words='english',
-            max_features=1000
-        )
-        
-        # Store the vectorizer as instance variable so it can be reused
-        self.is_fitted = False
         
     # Initialize NLTK components
         self.lemmatizer = WordNetLemmatizer()
