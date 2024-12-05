@@ -336,6 +336,13 @@ if pipeline is not None:
                     if result['LIME_visualization'] is not None:
                         try:
                             st.subheader("Feature Importance Analysis")
+                            # Add explanatory text above the chart
+                            st.markdown("""
+                            This chart highlights the key features that influenced the detector's decision:
+                            * **Positive values** (bars to the right) support the prediction
+                            * **Negative values** (bars to the left) oppose the prediction
+                            * Longer bars indicate stronger influence on the prediction
+                            """)
                             st.plotly_chart(result['LIME_visualization'], use_container_width=True)
                         except Exception as viz_error:
                             st.error(f"Error displaying visualization: {str(viz_error)}")
