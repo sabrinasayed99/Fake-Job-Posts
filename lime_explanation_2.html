@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_divWORVXZN9ICDOPIV"></div>
+        <div class="lime top_div" id="top_divCKR4PRVC6XM0TN2"></div>
         
         <script>
-        var top_div = d3.select('#top_divWORVXZN9ICDOPIV').classed('lime top_div', true);
+        var top_div = d3.select('#top_divCKR4PRVC6XM0TN2').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["Legitimate", "Fraudulent"], [0.9996635317802429, 0.0003364704898558557]);
+            var pp = new lime.PredictProba(pp_svg, ["Legitimate", "Fraudulent"], [0.9999058246612549, 9.418270929018036e-05]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["Legitimate", "Fraudulent"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["nurse <= 0.00", 0.024195758037607904], ["work home <= 0.00", 0.02322838451573106], ["updated <= 0.00", 0.017435300012808665], ["revenue <= 0.00", -0.017263009395554], ["big data <= 0.00", -0.01659389620926103], ["friendly cooperative attitudedemonstrate <= 0.00", 0.01565271539228014], ["changing digital world <= 0.00", 0.00957177605002203], ["changing digital <= 0.00", 0.008117577520136723], ["based experience <= 0.00", -0.007108087566268369], ["scale <= 0.00", -0.0003079725744239323]], 1, exp_div);
+                exp.show([["work time <= 0.00", 0.020038604878411033], ["equivalent work <= 0.00", -0.01573569886229204], ["spend <= 0.00", 0.0155155769266452], ["change world <= 0.00", 0.014658486147828486], ["human behaviour strategy <= 0.00", 0.013161113485943891], ["annual <= 0.00", 0.0063045355880297195], ["telecom <= 0.00", -0.005749434080185231], ["specialist expert respective <= 0.00", 0.0030487556801842234], ["folding inserting delivery <= 0.00", -0.0029800995056788087], ["applied memetics <= 0.00", -9.207432550017828e-05]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["nurse", "0.00", 0.024195758037607904], ["work home", "0.00", 0.02322838451573106], ["updated", "0.00", 0.017435300012808665], ["revenue", "0.00", -0.017263009395554], ["big data", "0.00", -0.01659389620926103], ["friendly cooperative attitudedemonstrate", "0.00", 0.01565271539228014], ["changing digital world", "0.00", 0.00957177605002203], ["changing digital", "0.00", 0.008117577520136723], ["based experience", "0.00", -0.007108087566268369], ["scale", "0.00", -0.0003079725744239323]], 1, raw_div);
+            exp.show_raw_tabular([["work time", "0.00", 0.020038604878411033], ["equivalent work", "0.00", -0.01573569886229204], ["spend", "0.00", 0.0155155769266452], ["change world", "0.00", 0.014658486147828486], ["human behaviour strategy", "0.00", 0.013161113485943891], ["annual", "0.00", 0.0063045355880297195], ["telecom", "0.00", -0.005749434080185231], ["specialist expert respective", "0.00", 0.0030487556801842234], ["folding inserting delivery", "0.00", -0.0029800995056788087], ["applied memetics", "0.00", -9.207432550017828e-05]], 1, raw_div);
         
         </script>
         </body></html>

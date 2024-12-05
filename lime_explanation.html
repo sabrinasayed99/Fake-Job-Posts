@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div6LOGC11ZKB13NKO"></div>
+        <div class="lime top_div" id="top_divJ1BPK04EC2B1JXA"></div>
         
         <script>
-        var top_div = d3.select('#top_div6LOGC11ZKB13NKO').classed('lime top_div', true);
+        var top_div = d3.select('#top_divJ1BPK04EC2B1JXA').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["Legitimate", "Fraudulent"], [0.9987064599990845, 0.001293541630730033]);
+            var pp = new lime.PredictProba(pp_svg, ["Legitimate", "Fraudulent"], [0.9995108246803284, 0.0004891539574600756]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["Legitimate", "Fraudulent"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["demonstrable <= 0.00", -0.04651026013762484], ["consider <= 0.00", -0.04178766029840883], ["conflict area world <= 0.00", -0.03826103290516228], ["estate <= 0.00", -0.025431478500249592], ["brand require new <= 0.00", 0.02207911445734873], ["ample <= 0.00", 0.005449856833191854], ["title_guarantee_score <= -0.01", -0.004168860792338826], ["level customer service <= 0.00", 0.002522633187909333], ["year professional <= 0.00", 0.0005171055696774459], ["mailing copy <= 0.00", -0.0003627565504975899]], 1, exp_div);
+                exp.show([["person <= 0.00", 0.023591366328824175], ["manage consumer purpose <= 0.00", -0.020813672810280952], ["work help client <= 0.00", 0.020089559790116434], ["strong understanding <= 0.00", 0.01866572213281946], ["budget <= 0.00", -0.016830350172228555], ["rapid <= 0.00", -0.01675153586794501], ["awareness <= 0.00", 0.010914835395204893], ["writtenlifting <= 0.00", 0.009338592402324923], ["file <= 0.00", -0.0019178408944274892], ["new skill <= 0.00", -0.0017107803061792925]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["demonstrable", "0.00", -0.04651026013762484], ["consider", "0.00", -0.04178766029840883], ["conflict area world", "0.00", -0.03826103290516228], ["estate", "0.00", -0.025431478500249592], ["brand require new", "0.00", 0.02207911445734873], ["ample", "0.00", 0.005449856833191854], ["title_guarantee_score", "-0.01", -0.004168860792338826], ["level customer service", "0.00", 0.002522633187909333], ["year professional", "0.00", 0.0005171055696774459], ["mailing copy", "0.00", -0.0003627565504975899]], 1, raw_div);
+            exp.show_raw_tabular([["person", "0.00", 0.023591366328824175], ["manage consumer purpose", "0.00", -0.020813672810280952], ["work help client", "0.00", 0.020089559790116434], ["strong understanding", "0.00", 0.01866572213281946], ["budget", "0.00", -0.016830350172228555], ["rapid", "0.00", -0.01675153586794501], ["awareness", "0.00", 0.010914835395204893], ["writtenlifting", "0.00", 0.009338592402324923], ["file", "0.00", -0.0019178408944274892], ["new skill", "0.00", -0.0017107803061792925]], 1, raw_div);
         
         </script>
         </body></html>
