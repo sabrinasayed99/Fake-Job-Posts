@@ -1,5 +1,5 @@
 ## Detecting Fraudulent Job Posts
-![istockphoto-1383553886-612x612](https://github.com/user-attachments/assets/89528215-99f3-4dda-862d-391177906979)
+![2023-JulyAug-R1-Job-Scams-edited](https://github.com/user-attachments/assets/18e82a1d-e4d7-4a35-8998-b971b50c2be4)
 
 #### Author : [Sabrina Sayed](https://github.com/sabrinasayed99)
 
@@ -92,8 +92,30 @@ Flag posts with unusual language, lack of grammar/clear language, and mispelling
 Extra verification for posts mentioning offshore work.
 
 ## Directory:
-Presentation
-Dataset
+[Presentation]([url](https://www.canva.com/design/DAGYKZgqBwc/_YKVCh6kJHvIwHZVKqbjFg/view?utm_content=DAGYKZgqBwc&utm_campaign=designshare&utm_medium=link&utm_source=editor))
+[Dataset]([url](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction/data))
 
 ## Repository Files:
+### Data 
+Contains the raw data file, alternative filtered dataframes, preliminary versions of the cleaned data frame, saved versions of the lime explainer and feature importances, and the 'Final_Cleaned_Data.csv' which was used to train the model
+
+### Notebooks
+Contains Cleaning_NLP, where cleaning, EDA, and initial text preprocessing with nltk takes place; NB_Model where baseline modeling and tuning is stored; XGBoost_Model where XGBoost model and tuning is stored.
+
+### __pycache__
+Streamlits 
+
+### Images
+Seaborn and matplotlib visuals from EDA and model interpretability plots from SHAP and LIME
+
+### Deliverables
+Contains final project materials submitted for a grade including modeling notebooks, cleaning and eda notebook, and github repo snapshot.
+
+### Models
+Saved model pipeline, model metadata, training data, feature importances, shap and lime explainers used in the streamlit app.py
+
+### Floating Files
+The streamlit elements include requirements.txt which holds the app dependencies, text_prcocessor, which holds the text processor script, and app.py which holds the app's script.
+
+
 
