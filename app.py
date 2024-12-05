@@ -109,9 +109,20 @@ def get_lime_explanation(input_data, pipeline, feature_names, X_train):
             num_features=10
         )
 
-        # Create DataFrame for visualization
+        # Clean up feature names by removing prefixes
+        def clean_feature_name(name):
+            # Remove common prefixes
+            name = re.sub(r'^(tfidf|num|cat)_', '', name)
+            # Replace underscores with spaces
+            name = name.replace('_', ' ')
+            # Capitalize first letter
+            name = name.capitalize()
+            return name
+
+        # Create DataFrame with cleaned feature names
         importance_df = pd.DataFrame(
-            exp.as_list(), 
+            [(clean_feature_name(feature), importance) 
+             for feature, importance in exp.as_list()],
             columns=['feature', 'importance']
         ).sort_values('importance', ascending=True)
         
