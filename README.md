@@ -93,6 +93,7 @@ Extra verification for posts mentioning offshore work.
 
 ## Directory:
 [Presentation]([url](https://www.canva.com/design/DAGYKZgqBwc/_YKVCh6kJHvIwHZVKqbjFg/view?utm_content=DAGYKZgqBwc&utm_campaign=designshare&utm_medium=link&utm_source=editor))
+[Demo Video] ([url](https://watch.screencastify.com/v/DnFORvGbfocv5Y7cELn8))
 [Dataset]([url](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction/data))
 
 ## Repository Files:
