@@ -1,2 +1,6 @@
 Cleaned_Processed_Data.csv
 Data/Cleaned_Processed_Data_2.csv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
