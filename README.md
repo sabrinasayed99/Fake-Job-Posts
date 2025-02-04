@@ -39,7 +39,7 @@ Using the Real or Fake Job Postings Dataset from [The University of the Aegean L
 - Visualization: Streamlit
 
 ## Methods:
-I built a baseline Naive Bayes Classifier, an XGBoost Classifier, and an XGBoost Classifier hypertuned with Grid Search Cross Validation and SMOTE. I utilized nltk to preprocess the textual data with lemmatization, removing stop words, and handling punctuation. I also created a modeling pipeline with a preprocessor implemented TargetEncoder, StandardScaler and TF-IDF vectorization. I used hyperparameter tuning technique like Synthetic Minority Oversampling to address class imbalance in the dataset. I prioritized the recall score  and accuracy as my main evaluating metrics.
+I built a baseline Naive Bayes Classifier, an XGBoost Classifier, and an XGBoost Classifier hypertuned with Grid Search Cross Validation and SMOTE. I utilized nltk to preprocess the textual data with lemmatization, removing stop words, and handling punctuation. I also created a modeling pipeline with a preprocessor that implements a TargetEncoder, StandardScaler and TF-IDF vectorizer. I used hyperparameter tuning technique like Synthetic Minority Oversampling to address class imbalance in the dataset. I prioritized the recall score and accuracy as my main evaluating metrics.
 
 
 ## Results:
