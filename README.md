@@ -4,7 +4,7 @@
 #### Author : [Sabrina Sayed](https://github.com/sabrinasayed99)
 
 ## Overview:
-Job scams and fake job listings are on the rise. In 2023 alone, there was a 118% increase in reported job scams compared to the previous year, according to the Identity Theft Resource Center's Trends in Identity report. AI generated job postings are making it easier for identity thieves to sounds legitimate through job postings. Last year, California had the highest number of recorded job scams. Bad actors create professional-looking LinkedIn profiles or job site profiles with live websites for phony businesses or even impersonate legitimate companies. 
+Job scams and fake job listings are on the rise. In 2023 alone, there was a 118% increase in reported job scams compared to the previous year, according to the Identity Theft Resource Center's Trends in Identity report. AI generated job postings are making it easier for identity thieves to sound legitimate through job postings. Last year, California had the highest number of recorded job scams. Bad actors create professional-looking LinkedIn profiles or job site profiles with live websites for phony businesses or even impersonate legitimate companies. 
 
 ## Goal:
 We want to identify the characteristics and patterns of fraudulent job posts in order to protect vulnerable job seekers from identity theft and other scams, improve employers' job posting practices, and provide security recommendations to job site and hiring platforms.
